@@ -1,61 +1,37 @@
-from sqlalchemy import text
-from app.db.database import engine
+from sqlalchemy.orm import Session
+
+from app.models.product_model import Product
 
 
-def get_all_products():
-    with engine.connect() as connection:
-        result = connection.execute(text("SELECT * FROM products"))
-        return [dict(row._mapping) for row in result]
+def get_all_products(db: Session):
+    return db.query(Product).all()
 
 
-def create_product(product):
+def create_product(db: Session, product):
 
-    query = text("""
-        INSERT INTO products
-        (
-            sku,
-            mpn,
-            product_name,
-            brand,
-            category,
-            description,
-            selling_price,
-            cost_price,
-            barcode,
-            unit,
-            lead_time_days,
-            weight,
-            length,
-            width,
-            height,
-            primary_image,
-            status
-        )
+    new_product = Product(
+        sku=product.sku,
+        mpn=product.mpn,
+        product_name=product.product_name,
+        brand=product.brand,
+        category=product.category,
+        description=product.description,
+        selling_price=product.selling_price,
+        cost_price=product.cost_price,
+        barcode=product.barcode,
+        unit=product.unit,
+        lead_time_days=product.lead_time_days,
+        weight=product.weight,
+        length=product.length,
+        width=product.width,
+        height=product.height,
+        primary_image=product.primary_image,
+        status=product.status,
+    )
 
-        VALUES
-        (
-            :sku,
-            :mpn,
-            :product_name,
-            :brand,
-            :category,
-            :description,
-            :selling_price,
-            :cost_price,
-            :barcode,
-            :unit,
-            :lead_time_days,
-            :weight,
-            :length,
-            :width,
-            :height,
-            :primary_image,
-            :status
-        )
-    """)
-
-    with engine.begin() as connection:
-        connection.execute(query, product.model_dump())
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
 
     return {
         "message": "Product created successfully ✅"

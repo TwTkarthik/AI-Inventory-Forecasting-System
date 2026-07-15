@@ -74,3 +74,22 @@ ON products(brand);
 
 CREATE INDEX IF NOT EXISTS idx_products_status
 ON products(status);
+
+CREATE TABLE IF NOT EXISTS suppliers (
+
+    supplier_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    supplier_name VARCHAR(255) NOT NULL,
+
+    contact_person VARCHAR(255),
+
+    email VARCHAR(255),
+
+    phone VARCHAR(20),
+
+    address TEXT,
+
+    lead_time_days INTEGER DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

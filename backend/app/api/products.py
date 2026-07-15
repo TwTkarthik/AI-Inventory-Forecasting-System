@@ -1,6 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.db.database import get_db
 
 from app.schemas.product_schema import (
     ProductResponse,
@@ -19,10 +22,13 @@ router = APIRouter(tags=["Products"])
     "/products",
     response_model=List[ProductResponse]
 )
-def fetch_products():
-    return get_all_products()
+def fetch_products(db: Session = Depends(get_db)):
+    return get_all_products(db)
 
 
 @router.post("/products")
-def add_product(product: ProductCreate):
-    return create_product(product)
+def add_product(
+    product: ProductCreate,
+    db: Session = Depends(get_db)
+):
+    return create_product(db, product)
