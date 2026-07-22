@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS products (
 
     lead_time_days INTEGER DEFAULT 0 CHECK (lead_time_days >= 0),
 
+    supplier_id UUID,
+
     weight NUMERIC(10,2),
 
     length NUMERIC(10,2),
@@ -55,7 +57,12 @@ CREATE TABLE IF NOT EXISTS products (
 
     updated_by UUID,
 
-    deleted_at TIMESTAMP
+    deleted_at TIMESTAMP,
+
+    CONSTRAINT fk_supplier
+    FOREIGN KEY (supplier_id)
+    REFERENCES suppliers(supplier_id)
+    ON DELETE SET NULL
 
 );
 
@@ -92,4 +99,29 @@ CREATE TABLE IF NOT EXISTS suppliers (
     lead_time_days INTEGER DEFAULT 0,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ===========================================================
+-- Table: Inventory
+-- ===========================================================
+
+CREATE TABLE IF NOT EXISTS inventory (
+    inventory_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    product_id UUID NOT NULL,
+
+    quantity_on_hand INTEGER NOT NULL DEFAULT 0,
+
+    reserved_quantity INTEGER NOT NULL DEFAULT 0,
+
+    reorder_level INTEGER NOT NULL DEFAULT 10,
+
+    warehouse_location VARCHAR(100),
+
+    last_stock_update TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_inventory_product
+        FOREIGN KEY (product_id)
+        REFERENCES products(product_id)
+        ON DELETE CASCADE
 );

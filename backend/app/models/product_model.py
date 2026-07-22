@@ -5,9 +5,11 @@ from sqlalchemy import (
     Integer,
     Text,
     DateTime,
+    ForeignKey,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -16,6 +18,7 @@ class Product(Base):
     __tablename__ = "products"
 
     product_id = Column(UUID(as_uuid=True), primary_key=True)
+    supplier_id = Column(UUID(as_uuid=True), ForeignKey("suppliers.supplier_id"), nullable=True)
     sku = Column(String(100), unique=True, nullable=False)
     mpn = Column(String(100))
     product_name = Column(String(255), nullable=False)
@@ -43,3 +46,6 @@ class Product(Base):
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    supplier = relationship("Supplier", back_populates="products")
+    inventory = relationship("Inventory", back_populates="product", uselist=False)

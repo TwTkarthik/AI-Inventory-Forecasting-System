@@ -24,11 +24,21 @@ class ProductResponse(BaseModel):
     primary_image: Optional[str]
     status: str
     status_reason: Optional[str]
+    supplier_id: Optional[UUID] = None
+    supplier_name: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
     class Config:
         from_attributes = True
+
+    @classmethod
+    def from_orm(cls, obj):
+        response = super().from_orm(obj)
+        supplier = getattr(obj, "supplier", None)
+        response.supplier_id = getattr(supplier, "supplier_id", None)
+        response.supplier_name = getattr(supplier, "supplier_name", None)
+        return response
         
 class ProductCreate(BaseModel):
     sku: str

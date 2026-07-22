@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, Text, DateTime, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
@@ -20,3 +21,5 @@ class Supplier(Base):
     address = Column(Text)
     lead_time_days = Column(Integer, server_default=text("0"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    products = relationship("Product",back_populates="supplier"
+)
