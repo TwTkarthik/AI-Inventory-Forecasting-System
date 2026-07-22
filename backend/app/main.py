@@ -4,6 +4,7 @@ from sqlalchemy import text
 from app.api.products import router as product_router
 from app.api.suppliers import router as supplier_router
 from app.api.inventory import router as inventory_router
+from app.api.purchase_order import router as purchase_order_router
 
 from app.db.database import engine
 from app.db.base import Base
@@ -11,6 +12,8 @@ from app.db.base import Base
 import app.models.product_model
 import app.models.supplier_model
 import app.models.inventory_model
+import app.models.purchase_order_model
+import app.models.purchase_order_item_model
 
 app = FastAPI(
     title="AI Inventory Forecasting API",
@@ -46,3 +49,4 @@ Base.metadata.create_all(bind=engine)
 app.include_router(product_router)
 app.include_router(supplier_router)
 app.include_router(inventory_router)
+app.include_router(purchase_order_router)

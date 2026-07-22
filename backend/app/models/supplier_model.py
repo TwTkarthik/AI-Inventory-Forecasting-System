@@ -21,5 +21,5 @@ class Supplier(Base):
     address = Column(Text)
     lead_time_days = Column(Integer, server_default=text("0"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    products = relationship("Product",back_populates="supplier"
-)
+    products = relationship("Product", back_populates="supplier")
+    purchase_orders = relationship("PurchaseOrder", back_populates="supplier")
